@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package payroll;
+
+option go_package = "payroll_system/backend/proto;proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+message Payroll {
+  string id = 1;
+  string emp_id = 2;
+  string emp_name = 3;
+  double salary = 4;
+  string month = 5;
+}
+
+message CreatePayrollRequest {
+  string emp_id = 1;
+  string emp_name = 2;
+  double salary = 3;
+  string month = 4;
+}
+
+message GetPayrollRequest { string id = 1; }
+message UpdatePayrollRequest {
+  string id = 1;
+  string emp_name = 2;
+  double salary = 3;
+  string month = 4;
+}
+message DeletePayrollRequest { string id = 1; }
+message ListPayrollsRequest {}
+message ListPayrollsResponse { repeated Payroll payrolls = 1; }
+
+service PayrollService {
+  rpc CreatePayroll (CreatePayrollRequest) returns (Payroll) {
+    option (google.api.http) = {
+      post: "/v1/payrolls"
+      body: "*"
+    };
+  }
+
+  rpc GetPayroll (GetPayrollRequest) returns (Payroll) {
+    option (google.api.http) = {
+      get: "/v1/payrolls/{id}"
+    };
+  }
+
+  rpc UpdatePayroll (UpdatePayrollRequest) returns (Payroll) {
+    option (google.api.http) = {
+      patch: "/v1/payrolls/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeletePayroll (DeletePayrollRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/payrolls/{id}"
+    };
+  }
+
+  rpc ListPayrolls (ListPayrollsRequest) returns (ListPayrollsResponse) {
+    option (google.api.http) = {
+      get: "/v1/payrolls"
+    };
+  }
+}
